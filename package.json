@@ -1,0 +1,17 @@
+{
+  "name": "moviedb-search-back-end",
+  "version": "0.0.1",
+  "description": "Search and store data from The Movie DB API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "movies",
+    "series",
+    "js",
+    "node"
+  ],
+  "author": "Dyego Cruz <dyegocruz@gmail.com> (https://github.com/dyegocruz)",
+  "license": "MIT"
+}
