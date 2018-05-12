@@ -17,6 +17,8 @@
   "author": "Dyego Cruz <dyegocruz@gmail.com> (https://github.com/dyegocruz)",
   "license": "MIT",
   "devDependencies": {
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.11.0",
