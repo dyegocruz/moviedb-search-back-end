@@ -37,6 +37,7 @@
     "express": "^4.16.3",
     "express-query-int": "^3.0.0",
     "mongoose": "^5.1.0",
+    "query-string": "^6.1.0",
     "request": "^2.85.0"
   },
   "devDependencies": {
