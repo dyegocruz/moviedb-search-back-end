@@ -8,7 +8,7 @@ const router = express();
 
 initializeDb((db) => {
   router.use(middleware({ config, db }));
-  router.use('/genre', genre({ config, db }));
+  router.use('/genres', genre({ config, db }));
 });
 
 export default router;
