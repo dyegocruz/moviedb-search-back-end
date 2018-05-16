@@ -31,6 +31,9 @@ export default ({ config }) => {
                 });
               }
             }
+          })
+          .catch((e) => {
+            res.send(e.response.data);
           });
       } else {
         res.json(genres);
