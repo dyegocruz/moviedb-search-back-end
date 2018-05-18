@@ -15,12 +15,15 @@ export default ({ config }) => {
     };
     const paramsStringify = queryString.stringify(params);
 
+    let queryDbParam = req.body.query;
+    queryDbParam = queryDbParam.trim().split(' ').join('.*.');
+
     Movie.find({
       $and: ([
         {
           $or: [
-            { original_title: { $regex: req.body.query, $options: 'i' } },
-            { title: { $regex: req.body.query, $options: 'i' } },
+            { original_title: { $regex: queryDbParam, $options: 'i' } },
+            { title: { $regex: queryDbParam, $options: 'i' } },
           ],
         },
       ]),
@@ -67,12 +70,15 @@ export default ({ config }) => {
     };
     const paramsStringify = queryString.stringify(params);
 
+    let queryDbParam = req.body.query;
+    queryDbParam = queryDbParam.trim().split(' ').join('.*.');
+
     Serie.find({
       $and: ([
         {
           $or: [
-            { original_name: { $regex: req.body.query, $options: 'i' } },
-            { name: { $regex: req.body.query, $options: 'i' } },
+            { original_name: { $regex: queryDbParam, $options: 'i' } },
+            { name: { $regex: queryDbParam, $options: 'i' } },
           ],
         },
       ]),
