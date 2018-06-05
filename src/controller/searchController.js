@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import axios from 'axios';
-import queryString from 'query-string';
+import { mountParams } from '../utils/StringUtils';
 import Movie from '../model/movie';
 import Serie from '../model/serie';
 
@@ -8,12 +8,7 @@ export default ({ config }) => {
   const api = Router();
 
   api.post('/movie', (req, res) => {
-    const params = {
-      api_key: config.apiKey,
-      language: 'pt-BR',
-      query: req.body.query.split(' ').join('+'),
-    };
-    const paramsStringify = queryString.stringify(params);
+    const params = mountParams({ apiKey: config.apiKey, query: req.body.query.split(' ').join('+') });
 
     let queryDbParam = req.body.query;
     queryDbParam = queryDbParam.trim().split(' ').join('.*.');
@@ -34,7 +29,7 @@ export default ({ config }) => {
 
       if (movies.length === 0) {
         console.log('API');
-        axios.get(`${config.apiUrl}/search/movie/?${paramsStringify}`)
+        axios.get(`${config.apiUrl}/search/movie/?${params}`)
           .then((response) => {
             if (response.data.results.length > 0) {
               response.data.results.forEach((movieElement) => {
@@ -63,12 +58,13 @@ export default ({ config }) => {
   });
 
   api.post('/serie', (req, res) => {
-    const params = {
-      api_key: config.apiKey,
-      language: 'pt-BR',
-      query: req.body.query.split(' ').join('+'),
-    };
-    const paramsStringify = queryString.stringify(params);
+    // const params = {
+    //   api_key: config.apiKey,
+    //   language: 'pt-BR',
+    //   query: req.body.query.split(' ').join('+'),
+    // };
+    // const paramsStringify = queryString.stringify(params);
+    const params = mountParams({ apiKey: config.apiKey, query: req.body.query.split(' ').join('+') });
 
     let queryDbParam = req.body.query;
     queryDbParam = queryDbParam.trim().split(' ').join('.*.');
@@ -89,7 +85,7 @@ export default ({ config }) => {
 
       if (series.length === 0) {
         console.log('API');
-        axios.get(`${config.apiUrl}/search/tv/?${paramsStringify}`)
+        axios.get(`${config.apiUrl}/search/tv/?${params}`)
           .then((response) => {
             if (response.data.results.length > 0) {
               response.data.results.forEach((serieElement) => {
