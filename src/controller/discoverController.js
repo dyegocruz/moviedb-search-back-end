@@ -76,10 +76,6 @@ export default ({ config }) => {
               if (err) {
                 res.send(err);
               }
-              // if (movie === null) {
-              //   const newMovie = new Movie(movieElement);
-              //   newMovie.save();
-              // }
             });
           });
 
@@ -110,11 +106,6 @@ export default ({ config }) => {
               if (err) {
                 res.send(err);
               }
-              // console.log(serie);
-              // if (serie === null) {
-              //   const newSerie = new Serie(serieElement);
-              //   newSerie.save();
-              // }
             });
           });
 
@@ -132,12 +123,12 @@ export default ({ config }) => {
   };
 
   api.get('/populate/movies', (req, res) => {
-    const params = mountParams({ apiKey: config.apiKey, sort: 'popularity.desc', page: 1 });
+    const params = mountParams({ apiKey: config.apiKey, sort: 'popularity.asc', page: 1 });
     populateMovies({ params, res });
   });
 
   api.get('/populate/series', (req, res) => {
-    const params = mountParams({ apiKey: config.apiKey, sort: 'popularity.desc', page: 1 });
+    const params = mountParams({ apiKey: config.apiKey, sort: 'popularity.asc', page: 1 });
     populateSeries({ params, res });
   });
 
