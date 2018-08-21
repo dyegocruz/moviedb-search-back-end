@@ -10,7 +10,7 @@ export default ({ config }) => {
 
   api.get('/popular/movie', (req, res) => {
     const params = mountParams({ apiKey: config.apiKey, sort_by: 'popularity.desc' });
-    axios.get(`${config.apiUrl}/discover/movie?${params}`)
+    axios.get(`${config.apiUrl}/discover/movie?${queryString.stringify(params)}`)
       .then((response) => {
         response.data.results.forEach((movieElement) => {
           Movie.findOne({ id: movieElement.id }, (err, movie) => {
@@ -62,17 +62,25 @@ export default ({ config }) => {
       });
   });
 
-  const populateMovies = ({ params, res }) => {
+  const populateMovies = async ({ params, res }) => {
     console.log(params);
-    axios.get(`${config.apiUrl}/discover/movie?${queryString.stringify(params)}`)
+    await axios.get(`${config.apiUrl}/discover/movie?${queryString.stringify(params)}`)
       .then((response) => {
         console.log(response.headers['x-ratelimit-remaining']);
         const newParams = params;
         newParams.page = params.page + 1;
         // console.log(newParams);
-        if (response.headers['x-ratelimit-remaining'] > 0) {
+        // if (response.headers['x-ratelimit-remaining'] > 0) {
           response.data.results.forEach((movieElement) => {
-            Movie.update({ id: movieElement.id }, { $set: movieElement }, (err) => {
+            Movie.update({ id: movieElement.id }, { $set: movieElement }, (err, movieUpdate) => {
+              if (movieUpdate.n === 0) {
+                const newMovie = new Movie(movieElement);
+                newMovie.save((errSave) => {
+                  if (errSave) {
+                    res.send(errSave);
+                  }
+                });
+              }
               if (err) {
                 res.send(err);
               }
@@ -84,9 +92,9 @@ export default ({ config }) => {
           } else {
             res.send('Populate concluded');
           }
-        } else {
-          setTimeout(populateMovies({ params: newParams, res }), 10000);
-        }
+        // } else {
+        //   setTimeout(populateMovies({ params: newParams, res }), 10000);
+        // }
       }).catch((err) => {
         res.send(err.response.data);
       });
@@ -100,9 +108,18 @@ export default ({ config }) => {
         const newParams = params;
         newParams.page = params.page + 1;
         // console.log(newParams);
-        if (response.headers['x-ratelimit-remaining'] > 0) {
+        // if (response.headers['x-ratelimit-remaining'] > 0) {
           response.data.results.forEach((serieElement) => {
-            Serie.update({ id: serieElement.id }, { $set: serieElement }, (err) => {
+            Serie.update({ id: serieElement.id }, { $set: serieElement }, (err, serieUpdate) => {
+              // console.log(serieUpdate);
+              if (serieUpdate.n === 0) {
+                const newSerie = new Serie(serieElement);
+                newSerie.save((errSave) => {
+                  if (errSave) {
+                    res.send(errSave);
+                  }
+                });
+              }
               if (err) {
                 res.send(err);
               }
@@ -110,25 +127,25 @@ export default ({ config }) => {
           });
 
           if (params.page < 1001) {
-            populateMovies({ params: newParams, res });
+            populateSeries({ params: newParams, res });
           } else {
             res.send('Populate concluded');
           }
-        } else {
-          setTimeout(populateMovies({ params: newParams, res }), 10000);
-        }
+        // } else {
+        //   setTimeout(populateSeries({ params: newParams, res }), 10000);
+        // }
       }).catch((err) => {
         res.send(err.response.data);
       });
   };
 
   api.get('/populate/movies', (req, res) => {
-    const params = mountParams({ apiKey: config.apiKey, sort: 'popularity.asc', page: 1 });
+    const params = mountParams({ apiKey: config.apiKey, sort: 'popularity.desc', page: 1 });
     populateMovies({ params, res });
   });
 
   api.get('/populate/series', (req, res) => {
-    const params = mountParams({ apiKey: config.apiKey, sort: 'popularity.asc', page: 1 });
+    const params = mountParams({ apiKey: config.apiKey, sort: 'popularity.desc', page: 271 });
     populateSeries({ params, res });
   });
 
